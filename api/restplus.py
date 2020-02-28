@@ -6,7 +6,7 @@ from config import settings
 from sqlalchemy.orm.exc import NoResultFound
 
 log = logging.getLogger(__name__)
-api = Api(version='1.0', title='Mikhamesh API', description='')
+api = Api(version='1.0', title='API Resources', description='')
 
 
 @api.errorhandler
