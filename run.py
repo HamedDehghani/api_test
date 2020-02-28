@@ -5,6 +5,8 @@ from flask import Flask, Blueprint
 from config import settings
 from api.features_flag.endpoints.features import ns as features_namespace
 from api.prices.endpoints.prices import ns as prices_namespace
+from api.accounts.endpoints.accounts import ns as accounts_namespace
+from api.favorites.endpoints.products import ns as favorites_namespace
 from api.restplus import api
 
 app = Flask(__name__)
@@ -30,6 +32,8 @@ def initialize_app(flask_app):
     api.init_app(blueprint)
     api.add_namespace(features_namespace)
     api.add_namespace(prices_namespace)
+    api.add_namespace(accounts_namespace)
+    api.add_namespace(favorites_namespace)
     flask_app.register_blueprint(blueprint)
 
     # db.init_app(flask_app)
