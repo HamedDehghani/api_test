@@ -1,6 +1,7 @@
 from flask_restplus import fields
 from api.restplus import api
 
+
 api_keys = api.model('Api keys', {
     'api_key': fields.String(required=True, readOnly=True, description='api key'),
     'app_version': fields.String(required=True, readOnly=True, description='app version'),
@@ -15,14 +16,39 @@ change_price = api.inherit('Change price', api_keys, {
     'max_price': fields.Integer(description='increase price until')
 })
 
-user_signup = api.inherit('user', api_keys, {
-    'phone_number': fields.String(required=True, readOnly=True, description='phone_number')
+user_model = api.inherit('user model', api_keys, {
+    'phone_number': fields.String(required=True, readOnly=True, description='phone number'),
+    'username': fields.String(readOnly=True, description='username'),
+    'first_name': fields.String(readOnly=True, description='first name'),
+    'last_name': fields.String(readOnly=True, description='last name')
 })
 
-product = api.inherit('Change price', api_keys, {
-    'site_id': fields.Integer(required=True, readOnly=True, description='site id'),
+favorite_model = api.inherit('favorite model', api_keys, {
+    'id': fields.Integer(readOnly=True, description='id'),
+    'user_id': fields.Integer(readOnly=True, description='user id'),
+    'site_id': fields.Integer(readOnly=True, description='site id'),
+    'category_id': fields.Integer(readOnly=True, description='category id'),
     'site_name': fields.String(required=True, readOnly=True, description='site name'),
-    'product_id': fields.Integer(required=True, readOnly=True, description='product id'),
-    'title_fa': fields.String(description='title fa'),
-    'title_en': fields.String(description='title en')
+    'product_name': fields.String(readOnly=True, description='product name'),
+    'product_url': fields.String(readOnly=True, description='title fa'),
+    'description': fields.String(readOnly=True, description='title en')
+})
+
+user_login = api.inherit('user login', api_keys, {
+    'id': fields.Integer(readOnly=True, description='user id'),
+    'phone_number': fields.String(required=True, readOnly=True, description='phone number'),
+    'password': fields.String(required=True, readOnly=True, description='password')
+})
+
+user_profile = api.inherit('user profile', api_keys, {
+    'phone_number': fields.String(required=True, readOnly=True, description='phone number'),
+    'first_name': fields.String(required=True, readOnly=True, description='first name'),
+    'last_name': fields.String(required=True, readOnly=True, description='last name'),
+    'birthday': fields.String(required=True, readOnly=True, description='birthday')
+})
+
+feature_model = api.model('feature model', {
+    'name': fields.String(readOnly=True, description='feature name'),
+    'value': fields.String(readOnly=True, description='value'),
+    'active': fields.Boolean(readOnly=True, description='status')
 })

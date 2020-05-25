@@ -1,9 +1,9 @@
 from entities.variant_price import VariantPriceModel
-from entities.features import Features
+from entities.features import FeatureModel
 
 
 def get_prices():
-    model = Features()
+    model = FeatureModel()
     features = model.fetch_all_features()
     results = []
     for item in features:

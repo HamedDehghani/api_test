@@ -1,14 +1,13 @@
 from sqlalchemy import Column, String, Integer, BigInteger, Boolean
-from sqlalchemy.ext.declarative import declarative_base
 from db_connector.postgresql_connector import engine
 from sqlalchemy.orm import Session
+from app import db
 
-Base = declarative_base()
 
-
-class VariantPriceModel(Base):
+class VariantPriceModel(db.Model):
     __tablename__ = 'variant_prices'
-    id = Column(BigInteger)
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
     product_id = Column(Integer)
     category_id = Column(Integer)
     status = Column(String)
@@ -21,7 +20,6 @@ class VariantPriceModel(Base):
     is_incredible = Column(Boolean)
     is_promotion = Column(Boolean)
     updated_at = Column(String)
-    id = Column(Integer, primary_key=True)
 
     def __init__(self, product_id, category_id, status, variant_id, color_id, warranty_id, seller_id, selling_price,
                  rrp_price, is_incredible, is_promotion, updated_at):
