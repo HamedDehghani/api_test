@@ -39,9 +39,9 @@ class AccountRegistration(Resource):
         user_model.deserialize(api.payload)
 
         current_user = UserModel.find_by_phone_number(standardize_phone_number(user_model.phone_number))
+        token = str(random.randint(10001, 99999))
         if current_user:
-            token = random.randint(10001, 99999)
-            current_user.password = UserModel.generate_hash(str(token))
+            current_user.password = UserModel.generate_hash(token)
             current_user.updated_at = datetime.now()
             try:
                 UserModel.add(current_user)
@@ -52,14 +52,15 @@ class AccountRegistration(Resource):
             except Exception as e:
                 return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
-        user_model.password = UserModel.generate_hash(user_model.password)
+        user_model.password = UserModel.generate_hash(token)
         user_model.active = True
         user_model.updated_at = datetime.now()
+        user_model.phone_number = standardize_phone_number(user_model.phone_number)
         try:
             UserModel.add(user_model)
 
             return {
-                'message': 'User {} was created'.format(user_model.username),
+                'message': 'User {} was created'.format(user_model.id),
                 'access_token': create_access_token(identity=user_model.username),
                 'refresh_token': create_refresh_token(identity=user_model.username)
             }
