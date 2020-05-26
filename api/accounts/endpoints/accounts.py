@@ -31,11 +31,12 @@ class AccountRegistration(Resource):
         """
         account registration
         """
-        user_model = UserModel()
-        user_model.deserialize(api.payload)
 
         if api.payload.get('api_key') != settings.API_KEY:
             return {'message': 'api key unauthorized'}, status.HTTP_401_UNAUTHORIZED
+
+        user_model = UserModel()
+        user_model.deserialize(api.payload)
 
         current_user = UserModel.find_by_phone_number(standardize_phone_number(user_model.phone_number))
         if current_user:
@@ -87,6 +88,7 @@ class AccountLogin(Resource):
             refresh_token = create_refresh_token(identity=phone_number)
             return {
                 'message': 'Logged in as {}'.format(current_user.phone_number),
+                'user_id': current_user.id,
                 'access_token': access_token,
                 'refresh_token': refresh_token
             }
