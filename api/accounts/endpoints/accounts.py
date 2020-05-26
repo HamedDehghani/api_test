@@ -62,7 +62,8 @@ class AccountRegistration(Resource):
             return {
                 'message': 'User {} was created'.format(user_model.id),
                 'access_token': create_access_token(identity=user_model.username),
-                'refresh_token': create_refresh_token(identity=user_model.username)
+                'refresh_token': create_refresh_token(identity=user_model.username),
+                'token': token
             }
         except Exception as e:
             return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
