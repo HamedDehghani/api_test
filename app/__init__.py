@@ -4,7 +4,8 @@ from config import settings
 from flask_jwt_extended import JWTManager
 
 app = Flask(__name__)
-app.config['SERVER_NAME'] = settings.FLASK_SERVER_NAME
+app.config['HOST'] = settings.HOST
+app.config['PORT'] = settings.PORT
 app.config['SQLALCHEMY_DATABASE_URI'] = settings.SQLALCHEMY_DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
 app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.RESTPLUS_SWAGGER_UI_DOC_EXPANSION
