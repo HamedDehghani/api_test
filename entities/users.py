@@ -1,6 +1,8 @@
 import json
 
 from sqlalchemy import Column, String, Integer, Boolean, DateTime
+from sqlalchemy.orm import relationship
+
 from app import db
 from passlib.hash import pbkdf2_sha256 as sha256
 
@@ -17,6 +19,10 @@ class UserModel(db.Model):
     first_name = Column(String(120))
     last_name = Column(String(120))
     birthday = Column(String(120))
+
+    related_users = relationship('RelatedUserModel', backref='users', lazy=True)
+    # related_user = relationship('RelatedUserModel', primaryjoin="related_users.related_user_id == users.id", lazy=True)
+    favorites = relationship('FavoriteModel', backref='users', lazy=True)
 
     def deserialize(self, payload):
         self.__dict__.update(payload)

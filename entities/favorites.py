@@ -1,15 +1,18 @@
 import json
 
-from sqlalchemy import Column, String, Integer, Boolean, DateTime
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship, backref
 from app import db
+from entities.sites import SiteModel
+from entities.users import UserModel
 
 
 class FavoriteModel(db.Model):
     __tablename__ = 'favorites'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, nullable=False)
-    site_id = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    site_id = Column(Integer, ForeignKey('sites.id'), nullable=False)
     category_id = Column(Integer, nullable=False)
     product_name = Column(String(255))
     product_url = Column(String(1024))

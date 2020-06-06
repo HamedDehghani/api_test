@@ -53,3 +53,8 @@ feature_model = api.model('feature model', {
     'value': fields.String(readOnly=True, description='value'),
     'active': fields.Boolean(readOnly=True, description='status')
 })
+
+related_user_model = api.model('related user model', {
+    'user_id': fields.String(readOnly=True, description='user id'),
+    'related_user_id': fields.String(readOnly=True, description='related user id')
+})

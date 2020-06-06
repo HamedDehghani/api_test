@@ -1,7 +1,7 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from app import app, db
-from entities import features, variant_price, users, favorites
+from entities import features, variant_price, users, favorites, sites, related_users
 
 # python manage.py db init
 # python manage.py db migrate
