@@ -3,7 +3,7 @@ import logging
 from flask_restplus import Resource
 from datetime import datetime
 from api.restplus import api
-from api.serializers import user_login, user_model, user_profile
+from api.serializers import user_login, user_model, user_profile, profile
 from config import settings, status
 from entities.users import UserModel, RevokedTokenModel
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required
@@ -131,14 +131,23 @@ class Profile(Resource):
         if api.payload.get('api_key') != settings.API_KEY:
             return {'message': 'api key unauthorized'}, status.HTTP_401_UNAUTHORIZED
 
-        phone_number = api.payload.get('phone_number')
-        current_user = UserModel.find_by_phone_number(standardize_phone_number(phone_number))
-        if not current_user:
-            return {'message': 'User {} doesnt exist'.format(phone_number)}
+        user = UserModel()
+        user.deserialize(api.payload)
 
-        current_user.first_name = api.payload.get('first_name')
-        current_user.last_name = api.payload.get('last_name')
-        current_user.birthday = api.payload.get('birthday')
+        current_user = UserModel.find_by_id(user.id)
+        if not current_user:
+            return {'message': 'User {} doesnt exist'.format(current_user.id)}
+
+        if 'first_name' in api.payload.keys():
+            current_user.first_name = api.payload.get('first_name')
+        if 'last_name' in api.payload.keys():
+            current_user.last_name = api.payload.get('last_name')
+        if 'birthday' in api.payload.keys():
+            current_user.birthday = api.payload.get('birthday')
+        if 'avatar' in api.payload.keys():
+            current_user.avatar = api.payload.get('avatar')
+        if 'gender' in api.payload.keys():
+            current_user.gender = api.payload.get('gender')
         current_user.updated_at = datetime.now()
         try:
             UserModel.add(current_user)
@@ -146,10 +155,35 @@ class Profile(Resource):
                 'message': 'User {} profile updated'.format(current_user.phone_number),
                 'first_name': current_user.first_name,
                 'last_name': current_user.last_name,
-                'birthday': current_user.birthday
+                'birthday': current_user.birthday,
+                'avatar': current_user.avatar,
+                'gender': current_user.gender
             }
         except Exception as e:
             return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    @api.expect(profile, validate=True)
+    def get(self):
+        if api.payload.get('api_key') != settings.API_KEY:
+            return {'message': 'api key unauthorized'}, status.HTTP_401_UNAUTHORIZED
+
+        user = UserModel()
+        user.deserialize(api.payload)
+
+        current_user = UserModel.find_by_id(user.id)
+        if current_user:
+            try:
+                return {
+                    'first_name': current_user.first_name,
+                    'last_name': current_user.last_name,
+                    'birthday': current_user.birthday,
+                    'avatar': current_user.avatar,
+                    'gender': current_user.gender
+                }
+            except Exception as e:
+                return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
+        else:
+            return {'message': 'user does not exist.'}
 
 
 @ns.route('/users')

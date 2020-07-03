@@ -42,10 +42,16 @@ user_login = api.inherit('user login', api_keys, {
 })
 
 user_profile = api.inherit('user profile', api_keys, {
-    'phone_number': fields.String(required=True, readOnly=True, description='phone number'),
-    'first_name': fields.String(required=True, readOnly=True, description='first name'),
-    'last_name': fields.String(required=True, readOnly=True, description='last name'),
-    'birthday': fields.String(required=True, readOnly=True, description='birthday')
+    'id': fields.Integer(required=True, readOnly=True, description='user id'),
+    'first_name': fields.String(readOnly=True, description='first name'),
+    'last_name': fields.String(readOnly=True, description='last name'),
+    'birthday': fields.String(readOnly=True, description='birthday'),
+    'avatar': fields.String(readOnly=True, description='avatar'),
+    'gender': fields.String(readOnly=True, description='gender')
+})
+
+profile = api.inherit('profile', api_keys, {
+    'id': fields.Integer(required=True, readOnly=True, description='user id')
 })
 
 feature_model = api.model('feature model', {
