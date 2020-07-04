@@ -47,7 +47,8 @@ user_profile = api.inherit('user profile', api_keys, {
     'last_name': fields.String(readOnly=True, description='last name'),
     'birthday': fields.String(readOnly=True, description='birthday'),
     'avatar': fields.String(readOnly=True, description='avatar'),
-    'gender': fields.String(readOnly=True, description='gender')
+    'gender': fields.String(readOnly=True, description='gender enum female, male'),
+    'birthday_access': fields.String(readOnly=True, description='birthday access enum public, friends, hidden')
 })
 
 profile = api.inherit('profile', api_keys, {

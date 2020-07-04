@@ -1,5 +1,5 @@
 import json
-from sqlalchemy import Column, String, Integer, Boolean, DateTime
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, Enum
 from sqlalchemy.orm import relationship
 from app import db
 from passlib.hash import pbkdf2_sha256 as sha256
@@ -17,7 +17,8 @@ class UserModel(db.Model):
     first_name = Column(String(120))
     last_name = Column(String(120))
     birthday = Column(String(120))
-    gender = Column(String(10))
+    gender = Column(Enum('female', 'male', name='gender_enum', create_type=False))
+    birthday_access = Column(Enum('public', 'friends', 'hidden', name='birthday_access', create_type=False))
     avatar = Column(String(1024))
 
     related_users = relationship('RelatedUserModel', backref='users', lazy=True)

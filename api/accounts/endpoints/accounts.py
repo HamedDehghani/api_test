@@ -35,10 +35,10 @@ class AccountRegistration(Resource):
         if api.payload.get('api_key') != settings.API_KEY:
             return {'message': 'api key unauthorized'}, status.HTTP_401_UNAUTHORIZED
 
-        user_model = UserModel()
-        user_model.deserialize(api.payload)
+        user = UserModel()
+        user.deserialize(api.payload)
 
-        current_user = UserModel.find_by_phone_number(standardize_phone_number(user_model.phone_number))
+        current_user = UserModel.find_by_phone_number(standardize_phone_number(user.phone_number))
         token = str(random.randint(10001, 99999))
         if current_user:
             current_user.password = UserModel.generate_hash(token)
@@ -47,23 +47,25 @@ class AccountRegistration(Resource):
                 UserModel.add(current_user)
                 return {
                     'message': 'User {} already exists'.format(current_user.phone_number),
-                    'token': token
+                    'token': token,
+                    'is_exists': True
                 }
             except Exception as e:
                 return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
-        user_model.password = UserModel.generate_hash(token)
-        user_model.active = True
-        user_model.updated_at = datetime.now()
-        user_model.phone_number = standardize_phone_number(user_model.phone_number)
+        user.password = UserModel.generate_hash(token)
+        user.active = True
+        user.updated_at = datetime.now()
+        user.phone_number = standardize_phone_number(user.phone_number)
         try:
-            UserModel.add(user_model)
+            UserModel.add(user)
 
             return {
-                'message': 'User {} was created'.format(user_model.id),
-                'access_token': create_access_token(identity=user_model.username),
-                'refresh_token': create_refresh_token(identity=user_model.username),
-                'token': token
+                'message': 'User {} was created'.format(user.id),
+                'access_token': create_access_token(identity=user.username),
+                'refresh_token': create_refresh_token(identity=user.username),
+                'token': token,
+                'is_exists': False
             }
         except Exception as e:
             return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -83,7 +85,10 @@ class AccountLogin(Resource):
         phone_number = api.payload['phone_number']
         current_user = UserModel.find_by_phone_number(phone_number)
         if not current_user:
-            return {'message': 'User {} doesnt exist'.format(phone_number)}
+            return {
+                'message': 'User {} doesnt exist'.format(phone_number),
+                'is_exists': False
+            }
 
         if UserModel.verify_hash(api.payload['password'], current_user.password):
             access_token = create_access_token(identity=phone_number)
@@ -92,7 +97,8 @@ class AccountLogin(Resource):
                 'message': 'Logged in as {}'.format(current_user.phone_number),
                 'user_id': current_user.id,
                 'access_token': access_token,
-                'refresh_token': refresh_token
+                'refresh_token': refresh_token,
+                'is_exists': True
             }
         else:
             return {'message': 'Wrong credentials'}
@@ -148,6 +154,8 @@ class Profile(Resource):
             current_user.avatar = api.payload.get('avatar')
         if 'gender' in api.payload.keys():
             current_user.gender = api.payload.get('gender')
+        if 'birthday_access' in api.payload.keys():
+            current_user.birthday_access = api.payload.get('birthday_access')
         current_user.updated_at = datetime.now()
         try:
             UserModel.add(current_user)
@@ -157,7 +165,8 @@ class Profile(Resource):
                 'last_name': current_user.last_name,
                 'birthday': current_user.birthday,
                 'avatar': current_user.avatar,
-                'gender': current_user.gender
+                'gender': current_user.gender,
+                'birthday_access': current_user.birthday_access
             }
         except Exception as e:
             return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -178,7 +187,8 @@ class Profile(Resource):
                     'last_name': current_user.last_name,
                     'birthday': current_user.birthday,
                     'avatar': current_user.avatar,
-                    'gender': current_user.gender
+                    'gender': current_user.gender,
+                    'birthday_access': current_user.birthday_access
                 }
             except Exception as e:
                 return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
