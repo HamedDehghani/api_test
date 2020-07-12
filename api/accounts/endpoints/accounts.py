@@ -172,7 +172,7 @@ class Profile(Resource):
             return {'message': e}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
     @api.expect(profile, validate=True)
-    def get(self):
+    def post(self):
         if api.payload.get('api_key') != settings.API_KEY:
             return {'message': 'api key unauthorized'}, status.HTTP_401_UNAUTHORIZED
 
