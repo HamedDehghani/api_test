@@ -68,6 +68,7 @@ feature_model = api.model('feature model', {
 })
 
 related_user_model = api.model('related user model', {
-    'user_id': fields.String(readOnly=True, description='user id'),
-    'related_user_id': fields.String(readOnly=True, description='related user id')
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id'),
+    'related_user_id': fields.Integer(readOnly=True, description='related user id'),
+    'related_user_phone_number': fields.String(readOnly=True, description='related user phone number')
 })

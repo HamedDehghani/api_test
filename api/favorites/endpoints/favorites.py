@@ -13,6 +13,18 @@ log = logging.getLogger(__name__)
 ns = api.namespace('favorite', description='Operations related to favorites')
 
 
+def get_product_id_from_url(product_url):
+    print(product_url)
+    product_id = int(re.findall('(?:dkp-)(\w+)', product_url)[0])
+    return product_id
+
+
+def get_site_id(product_url):
+    domain = product_url.split("://")[1].split("/")[0].split('.')
+    # return domain[len(domain) - 2]
+    return 1
+
+
 @ns.route('/list')
 class FavoriteCollection(Resource):
     @api.marshal_with(favorite_model, as_list=True)
@@ -29,12 +41,6 @@ class FavoriteCollection(Resource):
         return favorites.get_by_user_id(favorites.user_id)
 
 
-def get_product_id_from_url(product_url):
-    print(product_url)
-    product_id = int(re.findall('(?:dkp-)(\w+)', product_url)[0])
-    return product_id
-
-
 @ns.route('/add')
 class FavoriteAdd(Resource):
     @api.expect(favorite_model, validate=True)
@@ -48,7 +54,7 @@ class FavoriteAdd(Resource):
 
         entity = FavoriteModel()
         entity.deserialize(api.payload)
-        entity.site_id = 1
+        entity.site_id = get_site_id(entity.product_url)
         entity.active = True
         entity.product_id = get_product_id_from_url(entity.product_url)
         entity.updated_at = datetime.now()
@@ -63,7 +69,7 @@ class FavoriteAdd(Resource):
 
 
 @ns.route('/remove')
-class FavoriteAdd(Resource):
+class FavoriteRemove(Resource):
     @api.expect(favorite_deactive_model, validate=True)
     @jwt_required
     def post(self):
