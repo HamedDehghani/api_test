@@ -25,14 +25,20 @@ user_model = api.inherit('user model', api_keys, {
 
 favorite_model = api.inherit('favorite model', api_keys, {
     'user_id': fields.Integer(required=True, readOnly=True, description='user id'),
-    'site_id': fields.Integer(required=True, readOnly=True, description='site id'),
-    'category_id': fields.Integer(required=True, readOnly=True, description='category id'),
+    'site_id': fields.Integer(required=False, readOnly=True, description='site id'),
+    'category_id': fields.Integer(required=False, readOnly=True, description='category id'),
     'site_name': fields.String(readOnly=True, description='site name'),
-    'product_name': fields.String(required=True, readOnly=True, description='product name'),
+    'product_id': fields.Integer(required=False, readOnly=True, description='product id'),
     'product_url': fields.String(required=True, readOnly=True, description='title fa'),
     'min_price': fields.Integer(readOnly=True, description='title fa'),
     'max_price': fields.Integer(readOnly=True, description='title fa'),
     'description': fields.String(readOnly=True, description='title en')
+})
+
+favorite_deactive_model = api.inherit('favorite model', api_keys, {
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id'),
+    'site_id': fields.Integer(required=True, readOnly=True, description='site id'),
+    'product_id': fields.Integer(required=True, readOnly=True, description='product id')
 })
 
 user_login = api.inherit('user login', api_keys, {

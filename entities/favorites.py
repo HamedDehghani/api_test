@@ -1,8 +1,9 @@
 import json
 
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship, backref
 from app import db
+from datetime import datetime
 from entities.sites import SiteModel
 from entities.users import UserModel
 
@@ -13,8 +14,8 @@ class FavoriteModel(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     site_id = Column(Integer, ForeignKey('sites.id'), nullable=False)
-    category_id = Column(Integer, nullable=False)
-    product_name = Column(String(255))
+    category_id = Column(Integer, nullable=True)
+    product_id = Column(Integer, nullable=False)
     product_url = Column(String(1024))
     image_url = Column(String(1024))
     description = Column(String(255))
@@ -24,6 +25,8 @@ class FavoriteModel(db.Model):
     max_price = Column(Integer, nullable=True)
     expire_date = Column(DateTime)
     updated_at = Column(DateTime)
+    __table_args__ = (UniqueConstraint('site_id', 'product_id', 'user_id',
+                                       name='favorites_user_id_site_id_product_id_key'),)
 
     def deserialize(self, payload):
         self.__dict__.update(payload)
@@ -39,3 +42,25 @@ class FavoriteModel(db.Model):
     def get_all():
         result = db.session.query(FavoriteModel).all()
         return result
+
+    @staticmethod
+    def get_by_user_id(user_id):
+        result = db.session.query(FavoriteModel).filter(FavoriteModel.user_id == user_id, FavoriteModel.active).all()
+        return result
+
+    @staticmethod
+    def deactive(user_id, site_id, product_id):
+        favorite = db.session.query(FavoriteModel).filter(FavoriteModel.user_id == user_id,
+                                                          FavoriteModel.site_id == site_id,
+                                                          FavoriteModel.product_id == product_id,
+                                                          FavoriteModel.active).first()
+        favorite.updated_at = datetime.now()
+        favorite.active = False
+        try:
+            FavoriteModel.add(favorite)
+            return {
+                'message': 'product {} remove from favorites.'.format(favorite.product_id),
+                'id': favorite.id
+            }
+        except Exception as e:
+            return {'message': str(e)}
