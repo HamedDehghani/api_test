@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from sqlalchemy import Column, Integer, Boolean, DateTime, ForeignKey
 from app import db
@@ -33,3 +34,20 @@ class RelatedUserModel(db.Model):
     def get_by_user_id(user_id):
         result = db.session.query(RelatedUserModel).filter(RelatedUserModel.user_id == user_id).all()
         return result
+
+    @staticmethod
+    def deactive(user_id, related_user_id):
+        related_user = db.session.query(RelatedUserModel).filter(
+            RelatedUserModel.user_id == user_id,
+            RelatedUserModel.related_user_id == related_user_id,
+            RelatedUserModel.active).first()
+        RelatedUserModel.updated_at = datetime.now()
+        related_user.active = False
+        try:
+            RelatedUserModel.add(related_user)
+            return {
+                'message': 'user {} remove from related.'.format(related_user.related_user_id),
+                'id': related_user.id
+            }
+        except Exception as e:
+            return {'message': str(e)}

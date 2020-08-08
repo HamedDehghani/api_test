@@ -72,3 +72,32 @@ related_user_model = api.model('related user model', {
     'related_user_id': fields.Integer(readOnly=True, description='related user id'),
     'related_user_phone_number': fields.String(readOnly=True, description='related user phone number')
 })
+
+favorite_list_model = api.model('favorite list model', {
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id')
+})
+
+favorite_list_add_model = api.model('favorite list add model', {
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id'),
+    'name': fields.String(readOnly=True, description='list name'),
+    'description': fields.String(readOnly=True, description='description'),
+    'active': fields.Boolean(readOnly=True, description='status'),
+    'order': fields.Integer(readOnly=True, description='order')
+})
+
+favorite_list_deactive_model = api.model('favorite list model', {
+    'id': fields.Integer(required=True, readOnly=True, description='favorite list id')
+})
+
+favorite_list_item_model = api.model('favorite list item model', {
+    'favorite_list_id': fields.Integer(required=True, readOnly=True, description='favorite list id'),
+    'favorite_id': fields.Integer(required=True, readOnly=True, description='favorite item id'),
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id')
+})
+
+reminder_model = api.model('reminder model', {
+    'name': fields.String(required=True, readOnly=True, description='name'),
+    'event_date': fields.DateTime(required=True, readOnly=True, description='event_date'),
+    'description': fields.String(readOnly=True, description='description'),
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id')
+})

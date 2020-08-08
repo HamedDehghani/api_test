@@ -8,6 +8,8 @@ from api.prices.endpoints.prices import ns as prices_namespace
 from api.accounts.endpoints.accounts import ns as accounts_namespace
 from api.favorites.endpoints.favorites import ns as favorites_namespace
 from api.related_users.endpoints.related_users import ns as related_users_namespace
+from api.favorite_list.endpoints.favorite_list import ns as favorite_list_namespace
+from api.reminders.endpoints.reminders import ns as reminders_namespace
 from app import create_app
 from config import settings
 
@@ -25,6 +27,8 @@ api.add_namespace(prices_namespace)
 api.add_namespace(accounts_namespace)
 api.add_namespace(favorites_namespace)
 api.add_namespace(related_users_namespace)
+api.add_namespace(favorite_list_namespace)
+api.add_namespace(reminders_namespace)
 app.register_blueprint(blueprint)
 
 

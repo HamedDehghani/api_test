@@ -1,3 +1,5 @@
+import json
+
 from sqlalchemy import Column, String, Integer, BigInteger, Boolean
 from db_connector.postgresql_connector import engine
 from sqlalchemy.orm import Session
@@ -21,29 +23,20 @@ class VariantPriceModel(db.Model):
     is_promotion = Column(Boolean)
     updated_at = Column(String)
 
-    def __init__(self, product_id, category_id, status, variant_id, color_id, warranty_id, seller_id, selling_price,
-                 rrp_price, is_incredible, is_promotion, updated_at):
-        self.product_id = product_id
-        self.category_id = category_id
-        self.status = status
-        self.variant_id = variant_id
-        self.color_id = color_id
-        self.warranty_id = warranty_id
-        self.seller_id = seller_id
-        self.selling_price = selling_price
-        self.rrp_price = rrp_price
-        self.is_incredible = is_incredible
-        self.is_promotion = is_promotion
-        self.updated_at = updated_at
+    def deserialize(self, payload):
+        self.__dict__.update(payload)
 
-    def __repr__(self):
-        return """id='%s', product_id='%s', category_id='%s', status='%s', variant_id='%s', color_id='%s', warranty_id='%s', seller_id='%s', selling_price='%s', rrp_price='%s', is_incredible='%s', is_promotion='%s', updated_at='%s'
-            """ % (
-            self.id, self.product_id, self.category_id, self.status, self.variant_id, self.color_id, self.warranty_id,
-            self.seller_id, self.selling_price, self.rrp_price, self.is_incredible, self.is_promotion, self.updated_at)
+    def serialize(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    def add(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_all():
+        result = db.session.query(VariantPriceModel).all()
+        return result
 
 
 class VariantPrice:

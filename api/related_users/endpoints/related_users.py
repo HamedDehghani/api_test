@@ -78,6 +78,8 @@ class RelatedRemove(Resource):
         entity = RelatedUserModel()
         entity.deserialize(api.payload)
         try:
-            return RelatedUserModel.deactive(entity.user_id, entity.related_user_id)
+            if entity.related_user_id is not None and entity.related_user_id > 0:
+                return RelatedUserModel.deactive(entity.user_id, entity.related_user_id)
+            return {'message': 'related_user_id is required'}, status.HTTP_400_BAD_REQUEST
         except Exception as e:
             return {'message': str(e)}, status.HTTP_500_INTERNAL_SERVER_ERROR
