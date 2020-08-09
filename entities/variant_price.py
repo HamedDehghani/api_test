@@ -38,34 +38,19 @@ class VariantPriceModel(db.Model):
         result = db.session.query(VariantPriceModel).all()
         return result
 
-
-class VariantPrice:
-
-    def __init__(self):
-        self.connection = engine.connect()
-        self.session = Session(bind=self.connection)
-        print("DB Instance created")
-
-    def add(self, variant_price):
-        self.connection.execute(f"""
-            INSERT INTO variant_prices 
-            (product_id, category_id, status, variant_id, color_id, warranty_id, seller_id, selling_price, rrp_price, 
-            is_incredible, is_promotion, updated_at) VALUES(
-            '{variant_price.product_id}', '{variant_price.category_id}', '{variant_price.status}', 
-            '{variant_price.variant_id}', '{variant_price.color_id}', '{variant_price.warranty_id}', 
-            '{variant_price.seller_id}', '{variant_price.selling_price}', '{variant_price.rrp_price}',
-            '{variant_price.is_incredible}', '{variant_price.is_promotion}', '{variant_price.updated_at}')""")
-
-    def fetch_by_product_id(self, p_id):
-        result = self.session.query(VariantPriceModel).filter(VariantPriceModel.variant_id == p_id)
+    @staticmethod
+    def get_by_product_id(p_id):
+        result = db.session.query(VariantPriceModel).filter(VariantPriceModel.variant_id == p_id)
         return result
 
-    def fetch_all_variant_prices(self):
-        result = self.session.query(VariantPriceModel).all()
+    @staticmethod
+    def get_all_variant_prices():
+        result = db.session.query(VariantPriceModel).all()
         return result
 
-    def fetch_by_query(self, query):
-        result = self.connection.execute(f"SELECT * FROM {query}")
+    @staticmethod
+    def get_by_query(query):
+        result = db.connection.execute(f"SELECT * FROM {query}")
 
         for data in result.fetchall():
             print(data)

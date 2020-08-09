@@ -61,23 +61,23 @@ profile = api.inherit('profile', api_keys, {
     'id': fields.Integer(required=True, readOnly=True, description='user id')
 })
 
-feature_model = api.model('feature model', {
+feature_model = api.inherit('feature model', api_keys, {
     'name': fields.String(readOnly=True, description='feature name'),
     'value': fields.String(readOnly=True, description='value'),
     'active': fields.Boolean(readOnly=True, description='status')
 })
 
-related_user_model = api.model('related user model', {
+related_user_model = api.inherit('related user model', api_keys, {
     'user_id': fields.Integer(required=True, readOnly=True, description='user id'),
     'related_user_id': fields.Integer(readOnly=True, description='related user id'),
     'related_user_phone_number': fields.String(readOnly=True, description='related user phone number')
 })
 
-favorite_list_model = api.model('favorite list model', {
+favorite_list_model = api.inherit('favorite list model', api_keys, {
     'user_id': fields.Integer(required=True, readOnly=True, description='user id')
 })
 
-favorite_list_add_model = api.model('favorite list add model', {
+favorite_list_add_model = api.inherit('favorite list add model', api_keys, {
     'user_id': fields.Integer(required=True, readOnly=True, description='user id'),
     'name': fields.String(readOnly=True, description='list name'),
     'description': fields.String(readOnly=True, description='description'),
@@ -85,19 +85,37 @@ favorite_list_add_model = api.model('favorite list add model', {
     'order': fields.Integer(readOnly=True, description='order')
 })
 
-favorite_list_deactive_model = api.model('favorite list model', {
-    'id': fields.Integer(required=True, readOnly=True, description='favorite list id')
+favorite_list_deactive_model = api.inherit('favorite list model', api_keys, {
+    'id': fields.Integer(required=True, readOnly=True, description='favorite list id'),
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id')
 })
 
-favorite_list_item_model = api.model('favorite list item model', {
+favorite_list_item_model = api.inherit('favorite list item model', api_keys, {
     'favorite_list_id': fields.Integer(required=True, readOnly=True, description='favorite list id'),
     'favorite_id': fields.Integer(required=True, readOnly=True, description='favorite item id'),
     'user_id': fields.Integer(required=True, readOnly=True, description='user id')
 })
 
-reminder_model = api.model('reminder model', {
+reminder_model = api.inherit('reminder model', api_keys, {
     'name': fields.String(required=True, readOnly=True, description='name'),
     'event_date': fields.DateTime(required=True, readOnly=True, description='event_date'),
     'description': fields.String(readOnly=True, description='description'),
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id')
+})
+
+reminder_remove_model = api.inherit('reminder remove model', api_keys, {
+    'id': fields.Integer(required=True, readOnly=True, description='name'),
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id')
+})
+
+url_model = api.inherit('url model', api_keys, {
+    'url': fields.String(required=True, readOnly=True, description='name'),
+    'user_id': fields.Integer(required=True, readOnly=True, description='user id'),
+    'product_id': fields.Integer(readOnly=True, description='description'),
+    'site_id': fields.Integer(readOnly=True, description='description')
+})
+
+url_deactive_model = api.inherit('url model', api_keys, {
+    'id': fields.Integer(required=True, readOnly=True, description='favorite list id'),
     'user_id': fields.Integer(required=True, readOnly=True, description='user id')
 })

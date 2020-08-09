@@ -14,6 +14,7 @@ class SiteModel(db.Model):
     updated_at = Column(DateTime)
 
     favorites = db.relationship('FavoriteModel', backref=db.backref('sites'), lazy=True)
+    urls = db.relationship('UrlModel', backref=db.backref('sites'), lazy=True)
 
     def deserialize(self, payload):
         self.__dict__.update(payload)

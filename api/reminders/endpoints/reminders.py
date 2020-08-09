@@ -1,7 +1,7 @@
 import logging
 
 from api.restplus import api
-from api.serializers import reminder_model
+from api.serializers import reminder_model, reminder_remove_model
 from config import settings, status
 from datetime import datetime
 
@@ -56,7 +56,7 @@ class ReminderAdd(Resource):
 
 @ns.route('/remove')
 class ReminderRemove(Resource):
-    @api.expect(reminder_model, validate=True)
+    @api.expect(reminder_remove_model, validate=True)
     @jwt_required
     def post(self):
         """
